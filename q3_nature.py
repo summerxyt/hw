@@ -54,15 +54,13 @@ class NatureQN(Linear):
         """
         ##############################################################
         ################ YOUR CODE HERE - 10-15 lines ################ 
-        print "here"
-        
         with tf.variable_scope(scope, reuse) as ts:
           conv1 = tf.layers.conv2d(inputs=state, filters=32, kernel_size=8,
-                                   strides=4, activation=tf.nn.relu, name="conv1")
+                                   strides=4, padding="same", activation=tf.nn.relu, name="conv1")
           conv2 = tf.layers.conv2d(inputs=conv1, filters=64, kernel_size=4,
-                                   strides=2, activation=tf.nn.relu, name="conv2")
+                                   strides=2, padding="same", activation=tf.nn.relu, name="conv2")
           conv3 = tf.layers.conv2d(inputs=conv2, filters=64, kernel_size=3,
-                                   strides=1, activation=tf.nn.relu, name="conv3")
+                                   strides=1, padding="same", activation=tf.nn.relu, name="conv3")
           full1 = layers.fully_connected(inputs=layers.flatten(conv3), num_outputs=512)
           out = layers.fully_connected(inputs=full1, num_outputs=num_actions, activation_fn=None)
 
