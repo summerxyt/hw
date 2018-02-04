@@ -34,11 +34,9 @@ class LinearSchedule(object):
         """
         ##############################################################
         ################ YOUR CODE HERE - 3-4 lines ##################
-        self.epsilon = self.eps_begin + t * (self.eps_end - self.eps_begin) / self.nsteps
+        self.epsilon = self.eps_begin + t * 1.0 * (self.eps_end - self.eps_begin) / self.nsteps
         if self.epsilon < self.eps_end:
           self.epsilon = self.eps_end
-
-        pass
 
         ##############################################################
         ######################## END YOUR CODE ############## ########
@@ -107,6 +105,7 @@ def test2():
     env = EnvTest((5, 5, 1))
     exp_strat = LinearExploration(env, 1, 0, 10)
     exp_strat.update(5)
+    print exp_strat.epsilon
     assert exp_strat.epsilon == 0.5, "Test 2 failed"
     print("Test2: ok")
 
