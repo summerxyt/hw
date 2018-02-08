@@ -105,7 +105,6 @@ def test2():
     env = EnvTest((5, 5, 1))
     exp_strat = LinearExploration(env, 1, 0, 10)
     exp_strat.update(5)
-    print exp_strat.epsilon
     assert exp_strat.epsilon == 0.5, "Test 2 failed"
     print("Test2: ok")
 

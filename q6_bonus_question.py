@@ -11,6 +11,7 @@ from q1_schedule import LinearExploration, LinearSchedule
 from q2_linear import Linear
 
 from configs.q6_bonus_question import config
+#from configs.q3_nature import config
 
 
 class MyDQN(Linear):
@@ -64,12 +65,86 @@ class MyDQN(Linear):
         """
         ##############################################################
         ################ YOUR CODE HERE - 10-15 lines ################ 
+        with tf.variable_scope(scope, reuse) as ts:
+          conv1 = tf.layers.conv2d(inputs=state, filters=32, kernel_size=8,
+                                   strides=4, padding="same", activation=tf.nn.relu, name="conv1")
+          conv2 = tf.layers.conv2d(inputs=conv1, filters=64, kernel_size=4,
+                                   strides=2, padding="same", activation=tf.nn.relu, name="conv2")
+          conv3 = tf.layers.conv2d(inputs=conv2, filters=64, kernel_size=3,
+                                   strides=1, padding="same", activation=tf.nn.relu, name="conv3")
+          full1 = layers.fully_connected(inputs=layers.flatten(conv3), num_outputs=512)
+          out = layers.fully_connected(inputs=full1, num_outputs=num_actions, activation_fn=None)
         
-        pass
-
         ##############################################################
         ######################## END YOUR CODE #######################
         return out
+
+    def add_loss_op(self, q, target_q):
+        """
+        Sets the loss of a batch, self.loss is a scalar
+
+        Args:
+            q: (tf tensor) shape = (batch_size, num_actions)
+            target_q: (tf tensor) shape = (batch_size, num_actions)
+        """
+        # you may need this variable
+        num_actions = self.env.action_space.n
+
+        ##############################################################
+        """
+        TODO: The loss for an example is defined as:
+                Q_samp(s) = r if done
+                          = r + gamma * max_a' Q_target(s', a')
+                loss = (Q_samp(s) - Q(s, a))^2 
+
+              You need to compute the average of the loss over the minibatch
+              and store the resulting scalar into self.loss
+
+        HINT: - config variables are accessible through self.config
+              - you can access placeholders like self.a (for actions)
+                self.r (rewards) or self.done_mask for instance
+              - target_q is the q-value evaluated at the s' states (the next states)  
+              - you may find the following functions useful
+                    - tf.cast
+                    - tf.reduce_max / reduce_sum
+                    - tf.one_hot
+                    - ...
+
+        (be sure that you set self.loss)
+        """
+        ##############################################################
+        ##################### YOUR CODE HERE - 4-5 lines #############
+        nodone = tf.subtract(1.0, tf.cast(self.done_mask, tf.float32))
+        a_q = tf.argmax(target_q, 1)  # best actions w.r.t q.
+        max_target_q = tf.reduce_sum(tf.multiply(tf.one_hot(a_q, num_actions), target_q), 1)
+        q_samp = self.r + tf.multiply(nodone, self.config.gamma * max_target_q)
+        #q_samp = self.r + tf.multiply(nodone, self.config.gamma * tf.reduce_max(target_q, 1))
+        q_a = tf.reduce_sum(tf.multiply(tf.one_hot(self.a, num_actions), q), 1)
+        self.loss = tf.losses.mean_squared_error(q_samp, q_a)
+
+        ##############################################################
+        ######################## END YOUR CODE #######################
+
+
+"""
+Use deep Q network for test environment.
+"""
+"""
+if __name__ == '__main__':
+    env = EnvTest((80, 80, 1))
+
+    # exploration strategy
+    exp_schedule = LinearExploration(env, config.eps_begin, 
+            config.eps_end, config.eps_nsteps)
+
+    # learning rate schedule
+    lr_schedule  = LinearSchedule(config.lr_begin, config.lr_end,
+            config.lr_nsteps)
+
+    # train model
+    model = MyDQN(env, config)
+    model.run(exp_schedule, lr_schedule)
+"""
 
 
 """
