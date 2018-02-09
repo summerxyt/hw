@@ -102,7 +102,7 @@ class Linear(DQN):
         """
         ##############################################################
         ################ YOUR CODE HERE - 2-3 lines ##################
-        print state
+        #print state
         flatten_state = layers.flatten(state)
         out = layers.fully_connected(flatten_state, num_actions, None, scope=scope, reuse=reuse)
         
@@ -152,8 +152,8 @@ class Linear(DQN):
         ################### YOUR CODE HERE - 5-10 lines #############
         #tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, q_scope)
         #tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, target_q_scope)
-        print tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, target_q_scope)
-        print tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, q_scope)
+        #print tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, target_q_scope)
+        #print tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, q_scope)
         #self.update_target_op = tf.group(w, b)
         vars_target_q = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, target_q_scope)
         vars_q = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, q_scope)
