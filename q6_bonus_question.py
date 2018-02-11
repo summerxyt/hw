@@ -115,7 +115,7 @@ class MyDQN(Linear):
         ##############################################################
         ##################### YOUR CODE HERE - 4-5 lines #############
         nodone = tf.subtract(1.0, tf.cast(self.done_mask, tf.float32))
-        a_q = tf.argmax(target_q, 1)  # best actions w.r.t q.
+        a_q = tf.argmax(q, 1)  # best actions w.r.t q.
         max_target_q = tf.reduce_sum(tf.multiply(tf.one_hot(a_q, num_actions), target_q), 1)
         q_samp = self.r + tf.multiply(nodone, self.config.gamma * max_target_q)
         #q_samp = self.r + tf.multiply(nodone, self.config.gamma * tf.reduce_max(target_q, 1))
